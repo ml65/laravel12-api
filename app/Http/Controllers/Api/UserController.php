@@ -94,9 +94,23 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *     path="/api/profile",
-     *     summary="Get user profile",
+     *     summary="Get user profile by id or email",
      *     tags={"Users"},
      *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="query",
+     *         required=false,
+     *         description="ID пользователя",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         required=false,
+     *         description="Email пользователя",
+     *         @OA\Schema(type="string", format="email", example="user@example.com")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="User profile retrieved successfully",
@@ -110,6 +124,10 @@ class UserController extends Controller
      *         )
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated"
      *     )
@@ -117,8 +135,22 @@ class UserController extends Controller
      */
     public function profile(Request $request): JsonResponse
     {
-        $user = $request->user();
-        
+        $id = $request->query('id');
+        $email = $request->query('email');
+
+        $user = null;
+        if ($id) {
+            $user = \App\Models\User::find($id);
+        } elseif ($email) {
+            $user = \App\Models\User::where('email', $email)->first();
+        }
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+
         return response()->json([
             'user' => [
                 'id' => $user->id,

@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 // Auth routes
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/registration', [UserController::class, 'registration']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/registration', [UserController::class, 'registration']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'profile']);
 }); 
