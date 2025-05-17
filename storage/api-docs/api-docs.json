@@ -136,11 +136,16 @@
                         "application/json": {
                             "schema": {
                                 "required": [
+                                    "name",
                                     "email",
                                     "password",
                                     "gender"
                                 ],
                                 "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
                                     "email": {
                                         "type": "string",
                                         "format": "email",
@@ -181,6 +186,10 @@
                                                 "id": {
                                                     "type": "integer",
                                                     "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
                                                 },
                                                 "email": {
                                                     "type": "string",
@@ -224,6 +233,10 @@
                                                 "id": {
                                                     "type": "integer",
                                                     "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
                                                 },
                                                 "email": {
                                                     "type": "string",

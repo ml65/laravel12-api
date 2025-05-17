@@ -26,7 +26,8 @@ class UserController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"email", "password", "gender"},
+     *             required={"name", "email", "password", "gender"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
      *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
      *             @OA\Property(property="password", type="string", format="password", example="Password123"),
      *             @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male")
@@ -39,6 +40,7 @@ class UserController extends Controller
      *             @OA\Property(property="message", type="string", example="User registered successfully"),
      *             @OA\Property(property="user", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
      *                 @OA\Property(property="email", type="string", example="user@example.com"),
      *                 @OA\Property(property="gender", type="string", example="male")
      *             )
@@ -54,6 +56,7 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'email', 'unique:users'],
                 'password' => [
                     'required',
@@ -65,6 +68,7 @@ class UserController extends Controller
             ]);
 
             $user = User::create([
+                'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'gender' => $validated['gender'],
@@ -74,6 +78,7 @@ class UserController extends Controller
                 'message' => 'User registered successfully',
                 'user' => [
                     'id' => $user->id,
+                    'name' => $user->name,
                     'email' => $user->email,
                     'gender' => $user->gender,
                 ]
@@ -98,6 +103,7 @@ class UserController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="user", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
      *                 @OA\Property(property="email", type="string", example="user@example.com"),
      *                 @OA\Property(property="gender", type="string", example="male")
      *             )
@@ -116,6 +122,7 @@ class UserController extends Controller
         return response()->json([
             'user' => [
                 'id' => $user->id,
+                'name' => $user->name,
                 'email' => $user->email,
                 'gender' => $user->gender,
             ]
